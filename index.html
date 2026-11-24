@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aloqa paneli</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#f3f1fb;--bg2:#e6e2fa;--ink:#1a1747;--mute:#5d5a85;--glass:rgba(255,255,255,.6);--line:rgba(60,50,180,.14);
+  --a:#4b3bff;--b:#ff5e7a;--c:#19c3c9;--field:rgba(255,255,255,.75);--shadow:0 30px 80px -30px rgba(60,40,200,.35);
+  color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b0a24;--bg2:#15123f;--ink:#f1efff;--mute:#a6a2d6;--glass:rgba(30,26,80,.55);--line:rgba(160,150,255,.18);
+  --a:#7c6bff;--b:#ff6f8a;--c:#38e0d8;--field:rgba(10,8,40,.55);--shadow:0 30px 80px -30px rgba(0,0,0,.7);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b0a24;--bg2:#15123f;--ink:#f1efff;--mute:#a6a2d6;--glass:rgba(30,26,80,.55);--line:rgba(160,150,255,.18);
+  --a:#7c6bff;--b:#ff6f8a;--c:#38e0d8;--field:rgba(10,8,40,.55);--shadow:0 30px 80px -30px rgba(0,0,0,.7);color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 Manrope,system-ui,sans-serif;min-height:100vh;overflow-x:hidden;position:relative}
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.mesh i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;animation:drift 18s ease-in-out infinite alternate}
+.mesh i:nth-child(1){width:46vw;height:46vw;left:-10vw;top:-12vw;background:var(--a)}
+.mesh i:nth-child(2){width:38vw;height:38vw;right:-8vw;top:20vh;background:var(--b);animation-delay:-6s;opacity:.4}
+.mesh i:nth-child(3){width:34vw;height:34vw;left:30vw;bottom:-14vw;background:var(--c);animation-delay:-11s;opacity:.35}
+@keyframes drift{to{transform:translate(6vw,4vh) scale(1.15)}}
+#spot{position:fixed;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,rgba(124,107,255,.22),transparent 65%);left:50%;top:40%;transition:opacity .3s}
+main{position:relative;z-index:2;max-width:1120px;margin:0 auto;padding:clamp(20px,5vw,64px) clamp(16px,4vw,32px);
+  display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(24px,4vw,56px);align-items:start}
+@media (max-width:860px){main{grid-template-columns:1fr}}
+h1{font:700 clamp(2rem,5vw,3.6rem)/1.05 Unbounded,system-ui,sans-serif;letter-spacing:-.03em}
+h1 span{display:inline-block;opacity:0;transform:translateY(.6em) rotate(3deg);animation:rise .7s cubic-bezier(.2,.9,.2,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.lead{color:var(--mute);max-width:44ch;margin:18px 0 28px}
+.status{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border:1px solid var(--line);border-radius:99px;background:var(--glass);backdrop-filter:blur(12px);font-size:.9rem;margin-bottom:22px}
+.dot{width:9px;height:9px;border-radius:50%;background:#2fd37b;box-shadow:0 0 0 0 #2fd37b88;animation:ping 2s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 10px #2fd37b00}100%{box-shadow:0 0 0 0 #2fd37b00}}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{position:relative;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:18px;border-radius:24px;border:1px solid var(--line);
+  background:var(--glass);backdrop-filter:blur(14px);transition:transform .25s,border-color .25s;overflow:hidden;transform-style:preserve-3d}
+.tile:nth-child(1){grid-column:span 2}
+.tile::before{content:"";position:absolute;inset:0;background:radial-gradient(240px circle at var(--mx,50%) var(--my,0%),rgba(124,107,255,.28),transparent 70%);opacity:0;transition:opacity .3s}
+.tile:hover::before,.tile:focus-visible::before{opacity:1}
+.tile:hover{border-color:var(--a)}
+.tile svg{width:26px;height:26px;stroke:var(--a);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;position:relative}
+.tile b{display:block;margin-top:12px;font-weight:700;position:relative}
+.tile small{color:var(--mute);position:relative}
+.tile em{position:absolute;right:16px;top:16px;font-style:normal;font-size:.78rem;padding:3px 10px;border-radius:99px;background:var(--a);color:#fff;opacity:0;transform:translateY(-6px);transition:.25s}
+.tile.done em{opacity:1;transform:none}
+.card{position:relative;padding:clamp(20px,3vw,32px);border-radius:32px;background:var(--glass);backdrop-filter:blur(22px);border:1px solid var(--line);box-shadow:var(--shadow)}
+.card h2{font:700 1.25rem/1.2 Unbounded,sans-serif;margin-bottom:4px}
+.card>p{color:var(--mute);margin-bottom:18px;font-size:.95rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chip{font:500 .9rem Manrope,sans-serif;color:var(--ink);padding:8px 16px;border-radius:99px;border:1px solid var(--line);background:var(--field);cursor:pointer;transition:.25s}
+.chip[aria-pressed="true"]{background:linear-gradient(120deg,var(--a),var(--b));border-color:transparent;color:#fff;transform:scale(1.04)}
+.f{position:relative;margin-bottom:14px}
+.f input,.f textarea{width:100%;font:inherit;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:16px;padding:22px 16px 8px;outline:0;transition:border-color .25s,box-shadow .25s;resize:none}
+.f textarea{min-height:120px}
+.f label{position:absolute;left:16px;top:16px;color:var(--mute);pointer-events:none;transition:.2s;transform-origin:left}
+.f input:focus,.f textarea:focus{border-color:var(--a);box-shadow:0 0 0 4px rgba(124,107,255,.2)}
+.f input:focus+label,.f input:not(:placeholder-shown)+label,.f textarea:focus+label,.f textarea:not(:placeholder-shown)+label{transform:translateY(-10px) scale(.78);color:var(--a)}
+.f.bad input,.f.bad textarea{border-color:var(--b);animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.err{color:var(--b);font-size:.82rem;min-height:0;display:none;margin:4px 4px 0}
+.f.bad .err{display:block}
+.count{position:absolute;right:14px;bottom:10px;font-size:.78rem;color:var(--mute)}
+.send{width:100%;border:0;cursor:pointer;font:700 1rem Manrope,sans-serif;color:#fff;padding:16px;border-radius:18px;position:relative;overflow:hidden;
+  background:linear-gradient(120deg,var(--a),var(--b),var(--a));background-size:200% 100%;transition:background-position .5s,transform .15s;display:flex;justify-content:center;align-items:center;gap:10px}
+.send:hover{background-position:100% 0}
+.send:active{transform:scale(.98)}
+.send svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s}
+.send:hover svg{transform:translate(4px,-4px)}
+.send.loading svg{animation:fly .9s ease-in forwards}
+@keyframes fly{to{transform:translate(60px,-40px);opacity:0}}
+.ok{position:absolute;inset:0;border-radius:32px;display:grid;place-content:center;text-align:center;gap:10px;padding:24px;
+  background:var(--bg);opacity:0;pointer-events:none;transition:opacity .4s}
+.ok.show{opacity:.97;pointer-events:auto}
+.ok svg{width:84px;height:84px;margin:auto}
+.ok circle,.ok path{fill:none;stroke:var(--c);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:240;stroke-dashoffset:240}
+.ok.show circle{animation:draw .7s .1s forwards}.ok.show path{animation:draw .5s .6s forwards;stroke-dasharray:60;stroke-dashoffset:60}
+@keyframes draw{to{stroke-dashoffset:0}}
+.ok button{justify-self:center;margin-top:6px;font:500 .95rem Manrope,sans-serif;color:var(--ink);background:none;border:1px solid var(--line);border-radius:99px;padding:8px 18px;cursor:pointer}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;z-index:5;
+  background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:99px;font-size:.92rem;transition:.3s}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+:focus-visible{outline:3px solid var(--c);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}h1 span{opacity:1;transform:none}.ok circle,.ok path{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<div class="mesh" aria-hidden="true"><i></i><i></i><i></i></div>
+<div id="spot" aria-hidden="true"></div>
+<main>
+  <section>
+    <div class="status"><span class="dot"></span>Hozir onlayn · odatda 10 daqiqada javob beramiz</div>
+    <h1 id="title" aria-label="Keling, gaplashamiz">Keling, gaplashamiz</h1>
+    <p class="lead">Savolingiz, g’oyangiz yoki loyihangiz bormi? Quyidagi usullardan birini tanlang yoki xabarni shu yerning o’zida yozing.</p>
+    <div class="tiles">
+      <button class="tile" data-copy="+998 90 123 45 67" aria-label="Telefon raqamini nusxalash">
+        <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+        <b>+998 90 123 45 67</b><small>Telefon · Du–Ju, 9:00–18:00</small><em>Nusxalandi</em></button>
+      <button class="tile" data-copy="salom@misol.uz" aria-label="Email manzilini nusxalash">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>
+        <b>salom@misol.uz</b><small>Email</small><em>Nusxalandi</em></button>
+      <button class="tile" data-copy="@misol_aloqa" aria-label="Telegram nomini nusxalash">
+        <svg viewBox="0 0 24 24"><path d="m21 4-3 16-6-5-3 3v-5L21 4zM9 13l12-9"/></svg>
+        <b>@misol_aloqa</b><small>Telegram</small><em>Nusxalandi</em></button>
+      <button class="tile" data-copy="Toshkent, Amir Temur ko’chasi 12" aria-label="Manzilni nusxalash" style="grid-column:span 2">
+        <svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <b>Toshkent, Amir Temur ko’chasi 12</b><small>Ofis · tashrifdan oldin yozib qo’ying</small><em>Nusxalandi</em></button>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="ft">
+    <h2 id="ft">Xabar yuborish</h2>
+    <p>Mavzuni tanlang va qisqacha yozing.</p>
+    <div class="chips" role="group" aria-label="Mavzu">
+      <button type="button" class="chip" aria-pressed="true">Savol</button>
+      <button type="button" class="chip" aria-pressed="false">Hamkorlik</button>
+      <button type="button" class="chip" aria-pressed="false">Taklif</button>
+      <button type="button" class="chip" aria-pressed="false">Yordam</button>
+    </div>
+    <form id="form" novalidate>
+      <div class="f"><input id="n" placeholder=" " autocomplete="name"><label for="n">Ismingiz</label><div class="err">Ismingizni yozing.</div></div>
+      <div class="f"><input id="e" type="email" placeholder=" " autocomplete="email"><label for="e">Email manzilingiz</label><div class="err">To’g’ri email kiriting, masalan: ism@pochta.uz</div></div>
+      <div class="f"><textarea id="m" maxlength="400" placeholder=" "></textarea><label for="m">Xabaringiz</label><span class="count" id="cnt">0 / 400</span><div class="err">Xabar kamida 10 ta belgidan iborat bo’lsin.</div></div>
+      <button class="send" id="send" type="submit"><span id="sl">Xabarni yuborish</span>
+        <svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+    </form>
+    <div class="ok" id="ok" role="status">
+      <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="35"/><path d="m24 41 11 11 22-24"/></svg>
+      <h2>Xabar yuborildi</h2><p id="okt">Tez orada javob beramiz.</p>
+      <button type="button" id="again">Yana yozish</button>
+    </div>
+  </section>
+</main>
+<div id="toast" role="status"></div>
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  // sarlavha harflari ketma-ket chiqadi
+  var t=$('#title'),txt=t.getAttribute('aria-label');t.textContent='';
+  txt.split(' ').forEach(function(w,i){var s=document.createElement('span');s.textContent=w+'\u00a0';s.style.animationDelay=(i*0.12)+'s';s.setAttribute('aria-hidden','true');t.appendChild(s)});
+  // sichqoncha nuri
+  var sp=$('#spot');
+  window.addEventListener('pointermove',function(e){sp.style.left=e.clientX+'px';sp.style.top=e.clientY+'px'});
+  // kartochkalar: nur + engil qiyshayish
+  var tiles=document.querySelectorAll('.tile');
+  tiles.forEach(function(el){
+    el.addEventListener('pointermove',function(e){
+      var r=el.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+      el.style.setProperty('--mx',x+'px');el.style.setProperty('--my',y+'px');
+      el.style.transform='perspective(700px) rotateX('+((y/r.height-.5)*-6)+'deg) rotateY('+((x/r.width-.5)*6)+'deg) translateY(-2px)';
+    });
+    el.addEventListener('pointerleave',function(){el.style.transform=''});
+    el.addEventListener('click',function(){
+      var v=el.getAttribute('data-copy');
+      try{navigator.clipboard.writeText(v).catch(function(){})}catch(e){}
+      el.classList.add('done');setTimeout(function(){el.classList.remove('done')},1600);
+      toast(v+' nusxalandi');
+    });
+  });
+  var tt;function toast(m){var o=$('#toast');o.textContent=m;o.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){o.classList.remove('show')},1800)}
+  // mavzu tanlash
+  var topic='Savol',chips=document.querySelectorAll('.chip');
+  chips.forEach(function(c){c.addEventListener('click',function(){chips.forEach(function(x){x.setAttribute('aria-pressed','false')});c.setAttribute('aria-pressed','true');topic=c.textContent})});
+  // hisoblagich
+  var m=$('#m'),cnt=$('#cnt');m.addEventListener('input',function(){cnt.textContent=m.value.length+' / 400'});
+  // tekshiruv va yuborish
+  function check(el,ok){var f=el.parentNode;f.classList.remove('bad');if(!ok){void f.offsetWidth;f.classList.add('bad')}return ok}
+  $('#form').addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var a=check($('#n'),$('#n').value.trim().length>1);
+    var b=check($('#e'),/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('#e').value.trim()));
+    var c=check(m,m.value.trim().length>=10);
+    if(!(a&&b&&c))return;
+    var s=$('#send');s.classList.add('loading');$('#sl').textContent='Yuborilmoqda...';
+    setTimeout(function(){
+      $('#okt').textContent=$('#n').value.trim()+', “'+topic+'” mavzusidagi xabaringiz qabul qilindi. Tez orada javob beramiz.';
+      $('#ok').classList.add('show');s.classList.remove('loading');$('#sl').textContent='Xabarni yuborish';
+    },1100);
+  });
+  $('#again').addEventListener('click',function(){
+    $('#ok').classList.remove('show');$('#form').reset();cnt.textContent='0 / 400';
+  });
+})();
+</script>
+</body>
+</html>
